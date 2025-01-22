@@ -1,0 +1,73 @@
+//Here I have all variables being set up for the rest of the code, where arduino pins are assigned to certain variables
+#define IRL 9
+#define IRR 11
+int in1 = 2;
+int in2 = 4;
+int enA = 3;
+int in3 = 5;
+int in4 = 7;
+int enB = 6;
+
+//two more variables just to hold info from sensors to inform motor function later
+int statusSensorR;
+int statusSensorL;
+
+
+
+void setup() {
+
+//Setting all those variables from the first group to be recognized as physical pins on the board, telling the Arduino what kind of data it is receiving
+pinMode (enA, OUTPUT);
+pinMode (enB, OUTPUT);
+pinMode (in1, OUTPUT);
+pinMode (in2, OUTPUT);
+pinMode (in3, OUTPUT);
+pinMode (in4, OUTPUT);
+pinMode (IRL, INPUT);
+pinMode (IRR, INPUT);
+}
+
+
+
+void loop() {
+
+//Make sensors work, stores sensor data in dedicated variables
+statusSensorL = digitalRead (IRL);
+statusSensorR = digitalRead (IRR);
+
+//These 3 if, else, and else if statements read the sensor information and determine which way it will go
+
+//First one makes it go left if the left sensor is sensing something (a hand) and the right one is not
+  if ((statusSensorL == HIGH)&&(statusSensorR == LOW)){
+digitalWrite(in1, HIGH);
+digitalWrite(in2, LOW);
+digitalWrite(in3, LOW);
+digitalWrite(in4, HIGH);
+digitalWrite(enA, 100);
+digitalWrite(enB, 100);
+}
+
+//Second statement does the same for a right turn 
+else if ((statusSensorR == HIGH)&&(statusSensorL == LOW)){
+digitalWrite(in1, LOW);
+digitalWrite(in2, HIGH);
+digitalWrite(in3, HIGH);
+digitalWrite(in4, LOW);
+digitalWrite(enA, 100);
+digitalWrite(enB, 100);
+}
+
+//Only two other cases are sensing nothing and sensing both sensors. In both cases it goes forward. I could have alternatively made it stand still if it sensed nothing (with another else if statement before this), but we liked it this way
+  else
+  {
+digitalWrite(in1, HIGH);
+digitalWrite(in2, LOW);
+digitalWrite(in3, HIGH);
+digitalWrite(in4, LOW);
+digitalWrite(enA, 100);
+digitalWrite(enB, 100);
+  }
+
+//Last part adds real time delay as the board cannot run this code infinitely fast, and so it checks the sensors and readjusts every .1 seconds
+delay(100);
+  }
